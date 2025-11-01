@@ -12,4 +12,3 @@
 ./DEADLOCK/SAVED.mp4
 ./DEADLOCK/2int_wombo_p2.mp4
 ./DEADLOCK/2int_wombo_p1.mp4
-./DEADLOCK/mid_slide.mp4

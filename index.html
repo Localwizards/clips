@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
-
     <style>
         body {
             background-color: black;
@@ -16,8 +14,8 @@
 
         .video_container {
             display: flex;
-            align-items: center; /* centers but vertical */
-            gap: 10px; /* area between boxes */
+            align-items: center;
+            gap: 10px;
             padding-bottom: 10px;
             margin: auto;
         }
@@ -26,61 +24,120 @@
             width: 607px;
             height: 342px;
         }
-    </style>
 
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        button {
+            background-color: #444;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+            button:disabled {
+                background-color: #666;
+                cursor: not-allowed;
+            }
+
+        .category-button {
+        }
+
+    </style>
 </head>
+
+
+
 
 <body>
 
-    <div class="video_container">
+    
+    <div class="button-container">
         <div>
-            <video class="video_thumbnail" controls>
-                <source src="./DEADLOCK/2int_wombo_p2.mp4" type="video/mp4">
-            </video>
+            <button class="category-button" data-file="./DEADLOCK/videos.txt">DEADLOCK</button>
+            <button class="category-button" data-file="./MH4U/videos.txt">MH4U</button>
         </div>
 
-
+        <div>
+            <button id="prev-btn">Previous</button>
+            <button id="next-btn">Next</button>
+        </div>
     </div>
+    
 
 
-    <h2>TEST 1 2 TEST 3 4</h2>
+
     <div id="rows"></div>
 
     <script>
-        fetch('./DEADLOCK/videos.txt')
+        let videosPerPage = 4; // Number of videos to display at a time
+        let currentStartIndex = 0; // Index to track the start of the video set
+        let allVideoFiles = []; // Array to store all video files
 
-            .then(res => res.text())
-            .then(text => {
-                const videoFiles = text.split('\n').map(line => line.trim()).filter(Boolean);
+        function loadVideos(filePath) {
+            fetch(filePath)
+                .then(res => res.text())
+                .then(text => {
+                    allVideoFiles = text.split('\n').map(line => line.trim()).filter(Boolean);
+                    currentStartIndex = 0; // Reset index to 0 when switching categories
+                    updateVideoDisplay(); // Display videos on load
+                    updateButtons(); // Update button state
+                })
+                .catch(err => console.error('Error loading video list:', err));
+        }
 
-                const rows = document.getElementById('rows');
+        function updateVideoDisplay() {
+            const rows = document.getElementById('rows');
+            rows.innerHTML = ''; // Clear previous videos
 
-                videoFiles.forEach((clip, i) => {
-                    const container = document.createElement('div');
-                    container.className = 'video_container';
+            const videoSubset = allVideoFiles.slice(currentStartIndex, currentStartIndex + videosPerPage);
+            videoSubset.forEach(clip => {
+                const container = document.createElement('div');
+                container.className = 'video_container';
 
-                    const videos = document.createElement('video');
-                    videos.className = 'video-thumbnail';
-                    videos.src = clip;
-                    videos.controls = true;
+                const videos = document.createElement('video');
+                videos.className = 'video_thumbnail';
+                videos.src = clip;
+                videos.controls = true;
 
-                    const words = document.createElement('div');
-                    words.textContent = "4 3 TEST 2 1 TEST TEXT TEXT TEXT"
+                const words = document.createElement('div');
+                words.textContent = "4 3 TEST 2 1 TEST TEXT TEXT TEXT"; // Example text
 
+                container.appendChild(videos);
+                container.appendChild(words);
+                rows.appendChild(container);
+            });
+        }
 
-                    container.appendChild(videos);
-                    container.appendChild(words);
-                    rows.appendChild(container);
-                });
-            })
-            .catch(err => console.error('Error loading video list:', err));
+        function updateButtons() {
+            document.getElementById('prev-btn').disabled = currentStartIndex === 0;
+            document.getElementById('next-btn').disabled = currentStartIndex + videosPerPage >= allVideoFiles.length;
+        }
+
+        document.querySelectorAll('.category-button').forEach(button => {
+            button.addEventListener('click', () => {
+                loadVideos(button.dataset.file); // Load videos based on button clicked
+            });
+        });
+
+        document.getElementById('prev-btn').addEventListener('click', () => {
+            if (currentStartIndex > 0) {
+                currentStartIndex -= videosPerPage;
+                updateVideoDisplay();
+                updateButtons();
+            }
+        });
+
+        document.getElementById('next-btn').addEventListener('click', () => {
+            if (currentStartIndex + videosPerPage < allVideoFiles.length) {
+                currentStartIndex += videosPerPage;
+                updateVideoDisplay();
+                updateButtons();
+            }
+        });
     </script>
-
-
-
-
 </body>
-
-
-
 </html>
