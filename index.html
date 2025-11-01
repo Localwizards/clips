@@ -23,14 +23,43 @@
         }
 
         .video_thumbnail {
-            width: 45%;
-            height: auto;
+            width: 50%;
+            height: auto%;
         }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        button {
+            background-color: #444;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+            button:disabled {
+                background-color: #666;
+                cursor: not-allowed;
+            }
     </style>
 
 </head>
 
 <body>
+    <div class="button-container">
+        <div>
+            <button>DEADLOCK</button>
+            <button>MH4U</button>
+        </div>
+
+        <div>
+            <button>Previous</button>
+            <button>Next</button>
+        </div>
+    </div>
 
     <div id="rows"></div>
 
