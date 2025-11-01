@@ -36,30 +36,33 @@
 
     <script>
         fetch('./DEADLOCK/videos.txt')
-
             .then(res => res.text())
             .then(text => {
                 const videoFiles = text.split('\n').map(line => line.trim()).filter(Boolean);
-
                 const rows = document.getElementById('rows');
 
-                videoFiles.forEach((clip, i) => {
+                for (let i = 0; i < videoFiles.length; i += 2) {
                     const container = document.createElement('div');
                     container.className = 'video_container';
 
-                    const videos = document.createElement('video');
-                    videos.className = 'video_thumbnail';
-                    videos.src = clip;
-                    videos.controls = true;
+                    //vid1
+                    const video1 = document.createElement('video');
+                    video1.src = videoFiles[i];
+                    video1.controls = true;
 
-                    const words = document.createElement('div');
-                    words.textContent = "4 3 TEST 2 1 TEST TEXT TEXT TEXT"
+                    container.appendChild(video1);
 
+                    //vid2
+                    if (i + 1 < videoFiles.length) {
+                        const video2 = document.createElement('video');
+                        video2.src = videoFiles[i + 1];
+                        video2.controls = true;
 
-                    container.appendChild(videos);
-                    container.appendChild(words);
+                        container.appendChild(video2);
+                    }
+
                     rows.appendChild(container);
-                });
+                }
             })
             .catch(err => console.error('Error loading video list:', err));
     </script>
