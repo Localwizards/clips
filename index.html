@@ -11,25 +11,28 @@
             background-color: black;
             font-family: 'Inter';
             color: white;
-            text-align: left;
+            text-align: center;
         }
 
         .video_container {
             display: flex;
-            align-items: center; /* centers but vertical */
+            justify-content: center;
             gap: 10px; /* area between boxes */
-            padding-bottom: 10px;
-            margin: auto;
+            padding-bottom: 10px
+            
         }
 
         .video_thumbnail {
-            width: 47.5%;
-            height: auto%;
+            width: 36%;
+            height: auto;
         }
 
         .button-container {
             display: flex;
             justify-content: space-between;
+            width: 72.7%;
+            margin-left: 207px;
+            padding-bottom: 8px;
         }
 
         button {
@@ -51,52 +54,217 @@
 <body>
     <div class="button-container">
         <div>
-            <button>DEADLOCK</button>
-            <button>MH4U</button>
+            <button class="category-button" data-file="./DEADLOCK/videos.txt">DEADLOCK</button>
+            <button class="category-button" data-file="./MH4U/videos.txt">MH4U</button>
         </div>
 
         <div>
-            <button>Previous</button>
-            <button>Next</button>
+            <button id="prev-btn">Previous</button>
+            <button id="next-btn">Next</button>
+        </div>
+    </div>
+    <!--
+    <div class="video_container">
+        <div>
+            <video src="./DEADLOCK/puncho.mp4" class="video_thumbnail" controls></video>
+            <video src="./DEADLOCK/puncho.mp4" class="video_thumbnail" controls></video>
         </div>
     </div>
 
+    <div class="video_container">
+        <div>
+            <video src="./DEADLOCK/puncho.mp4" class="video_thumbnail" controls></video>
+            <video src="./DEADLOCK/puncho.mp4" class="video_thumbnail" controls></video>
+        </div>
+    </div>
+
+    -->
+
     <div id="rows"></div>
 
+
+
     <script>
-        fetch('./DEADLOCK/videos.txt')
-            .then(res => res.text())
-            .then(text => {
-                const videoFiles = text.split('\n').map(line => line.trim()).filter(Boolean);
-                const rows = document.getElementById('rows');
+        let videosPerPage = 4;
+        let currentStartIndex = 0;
+        /*const allVideoFilesDeadlock = [
+            "./DEADLOCK/puncho.mp4",
+            "./DEADLOCK/shiv_fucked.mp4",
+            "./DEADLOCK/2int_wombo_p3.mp4",
+            "./DEADLOCK/footsies.mp4",
+            "./DEADLOCK/cooked_haze.mp4",
+            "./DEADLOCK/pocket_cooked_af.mp4",
+            "./DEADLOCK/infernus_cooked_af_p2.mp4",
+            "./DEADLOCK/yopop_save.mp4",
+            "./DEADLOCK/boogie_slam.mp4",
+            "./DEADLOCK/bye_bye.mp4",
+            "./DEADLOCK/infernus_cooked_af.mp4",
+            "./DEADLOCK/SAVED.mp4",
+            "./DEADLOCK/2int_wombo_p2.mp4",
+            "./DEADLOCK/2int_wombo_p1.mp4"
+        ];
+        const allVideoFilesMH4U = [
+            "./MH4U/doubleup.mp4",
+            "./MH4U/solid.mp4",
+            "./MH4U/bashbros.mp4",
+            "./MH4U/tagteam.mp4",
+            "./MH4U/prep.mp4",
+            "./MH4U/bangbangbang.mp4",
+            "./MH4U/condorSLAM.mp4",
+            "./MH4U/chickCHETSON.mp4",
+            "./MH4U/assist.mp4",
+            "./MH4U/by_a_hair.mp4",
+            "./MH4U/CID_mothafucking_CONDOR.mp4",
+            "./MH4U/sickomode.mp4",
+            "./MH4U/BONKED.mp4",
+            "./MH4U/bingbang.mp4",
+            "./MH4U/launched.mp4",
+            "./MH4U/bonk.mp4",
+            "./MH4U/jesus.mp4",
+            "./MH4U/tailcut.mp4",
+            "./MH4U/condorcrazy.mp4",
+            "./MH4U/fireball_xd.mp4"
+        ];*/
 
-                for (let i = 0; i < videoFiles.length; i += 2) {
-                    const container = document.createElement('div');
-                    container.className = 'video_container';
+        function loadVideos(filePath) {
+            fetch(filePath)
+                .then(res => res.text())
+                .then(text => {
+                    allVideoFiles = text.split('\n').map(line => line.trim()).filter(Boolean);
+                    currentStartIndex = 0; // Reset index to 0 when switching categories
+                    updateVideoDisplay(); // Display videos on load
+                    updateButtons(); // Update button state
+                })
+                .catch(err => console.error('Error loading video list:', err));
+        }
+        
+       
 
-                    //vid1
-                    const video1 = document.createElement('video');
-                    video1.className = 'video_thumbnail';
-                    video1.src = videoFiles[i];
-                    video1.controls = true;
+        function updateVideoDisplay() {
+            const rows = document.getElementById('rows');
+            rows.innerHTML = '';
 
-                    container.appendChild(video1);
+            const videoSubset = allVideoFiles.slice(currentStartIndex, currentStartIndex + videosPerPage);
+            for (let i = 0; i < videoSubset.length; i += 4) {
+                const container1 = document.createElement('div');
+                container1.className = 'video_container';
 
-                    //vid2
-                    if (i + 1 < videoFiles.length) {
-                        const video2 = document.createElement('video');
-                        video2.className = 'video_thumbnail';
-                        video2.src = videoFiles[i + 1];
-                        video2.controls = true;
+                //vid1
+                const video1 = document.createElement('video');
+                video1.className = 'video_thumbnail';
+                video1.src = videoSubset[i];
+                video1.controls = true;
 
-                        container.appendChild(video2);
-                    }
+                container1.appendChild(video1);
 
-                    rows.appendChild(container);
+                //vid2
+                if (i + 1 < videoSubset.length) {
+                    const video2 = document.createElement('video');
+                    video2.className = 'video_thumbnail';
+                    video2.src = videoSubset[i + 1];
+                    video2.controls = true;
+
+                    container1.appendChild(video2);
                 }
-            })
-            .catch(err => console.error('Error loading video list:', err));
+
+                const container2 = document.createElement('div');
+                container2.className = 'video_container';
+
+                //vid3
+                if (i + 2 < videoSubset.length) {
+                    const video3 = document.createElement('video');
+                    video3.className = 'video_thumbnail';
+                    video3.src = videoSubset[i + 2];
+                    video3.controls = true;
+
+                    container2.appendChild(video3);
+                }
+
+                //vid4
+                if (i + 3 < videoSubset.length) {
+                    const video4 = document.createElement('video');
+                    video4.className = 'video_thumbnail';
+                    video4.src = videoSubset[i + 3];
+                    video4.controls = true;
+
+                    container2.appendChild(video4);
+                }
+
+                rows.appendChild(container1);
+                rows.appendChild(container2);
+
+            }
+        }
+
+
+        function updateButtons() {
+            document.getElementById('prev-btn').disabled = currentStartIndex === 0;
+            document.getElementById('next-btn').disabled = currentStartIndex + videosPerPage >= allVideoFilesDeadlock.length;
+            console.log(currentStartIndex);
+        }
+
+        document.querySelectorAll('.category-button').forEach(button => {
+            button.addEventListener('click', () => {
+                loadVideos(button.dataset.file);------------------------------------------------------------------------------------------
+                //updateVideoDisplay();
+                console.log("category click test");
+            });
+        });
+
+        document.getElementById('prev-btn').addEventListener('click', () => {
+            if (currentStartIndex > 0) {
+                currentStartIndex -= videosPerPage;
+                console.log("last page");
+                updateButtons();
+                updateVideoDisplay();
+            }
+        });
+
+        document.getElementById('next-btn').addEventListener('click', () => {
+            if (currentStartIndex + videosPerPage < allVideoFilesDeadlock.length) {
+                currentStartIndex += videosPerPage;
+                console.log("next page");
+                updateButtons();
+                updateVideoDisplay();
+            }
+        });
     </script>
 
+    <!--
+        <script>
+            fetch('./DEADLOCK/videos.txt')
+                .then(res => res.text())
+                .then(text => {
+                    const videoFiles = text.split('\n').map(line => line.trim()).filter(Boolean);
+                    const rows = document.getElementById('rows');
+
+                    for (let i = 0; i < videoFiles.length; i += 2) {
+                        const container = document.createElement('div');
+                        container.className = 'video_container';
+
+                        //vid1
+                        const video1 = document.createElement('video');
+                        video1.className = 'video_thumbnail';
+                        video1.src = videoFiles[i];
+                        video1.controls = true;
+
+                        container.appendChild(video1);
+
+                        //vid2
+                        if (i + 1 < videoFiles.length) {
+                            const video2 = document.createElement('video');
+                            video2.className = 'video_thumbnail';
+                            video2.src = videoFiles[i + 1];
+                            video2.controls = true;
+
+                            container.appendChild(video2);
+                        }
+
+                        rows.appendChild(container);
+                    }
+                })
+                .catch(err => console.error('Error loading video list:', err));
+        </script>
+        -->
 </body>
 </html>
