@@ -199,7 +199,7 @@
 
         function updateButtons() {
             document.getElementById('prev-btn').disabled = currentStartIndex === 0;
-            document.getElementById('next-btn').disabled = currentStartIndex + videosPerPage >= allVideoFilesDeadlock.length;
+            document.getElementById('next-btn').disabled = currentStartIndex + videosPerPage >= allVideoFiles.length;
             console.log(currentStartIndex);
         }
 
@@ -221,7 +221,7 @@
         });
 
         document.getElementById('next-btn').addEventListener('click', () => {
-            if (currentStartIndex + videosPerPage < allVideoFilesDeadlock.length) {
+            if (currentStartIndex + videosPerPage < allVideoFiles.length) {
                 currentStartIndex += videosPerPage;
                 console.log("next page");
                 updateButtons();
